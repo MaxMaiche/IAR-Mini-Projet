@@ -47,11 +47,27 @@ critic2_optim = torch.optim.Adam(critic2.parameters(), lr=1e-3)
 # Exploration avec du bruit gaussien
 # exploration_noise = GaussianNoise(sigma=0.1)
 # Initialisation de la politique TD3
-policy = TD3Policy(actor = actor, actor_optim = actor_optim, critic = critic1, critic_optim = critic1_optim, action_space=env.action_space, 
-                   critic2 = critic2, critic2_optim = critic2_optim,
-                   tau=0.005, gamma=0.99, exploration_noise = None,
-                   policy_noise=0.2, update_actor_freq=2, noise_clip=0.5, estimation_step=1, action_scaling=True)
+# policy = TD3Policy(actor = actor, actor_optim = actor_optim, critic = critic1, critic_optim = critic1_optim, action_space=env.action_space, 
+#                    critic2 = critic2, critic2_optim = critic2_optim,
+#                    tau=0.005, gamma=0.99, exploration_noise = None,
+#                    policy_noise=0.2, update_actor_freq=2, noise_clip=0.5, estimation_step=1, action_scaling=True)
 
+policy = TD3Policy(
+    actor,
+    actor_optim,
+    critic1,
+    critic1_optim,
+    critic2,
+    critic2_optim,
+    tau = 0.005,
+    gamma= 0.99,
+    exploration_noise = None,
+    policy_noise= 0.2,
+    update_actor_freq= 2,
+    noise_clip = 0.5,
+    reward_normalization = False,
+    estimation_step = 1,
+)
 # Création du buffer de replay et des collecteurs
 train_collector = Collector(policy, train_envs, VectorReplayBuffer(total_size=100000, buffer_num=10))
 test_collector = Collector(policy, test_envs)
